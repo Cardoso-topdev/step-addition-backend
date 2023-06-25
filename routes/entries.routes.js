@@ -27,5 +27,5 @@ module.exports = app => {
   // Generate Steps
   router.post('/generate', entries.generateSteps)
 
-  app.use('/api/vi/entries', router);
+  app.use('/api/v1/entries', router);
 };
