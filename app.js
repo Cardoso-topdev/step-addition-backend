@@ -9,7 +9,7 @@ const port = 3001;
 var corsOptions = {
   origin: "http://localhost:3000"
 };
-db.sequelize.sync({ force: false })
+db.sequelize.sync({ force: true })
   .then(() => {
     console.log("Synced db.");
   })
