@@ -1,24 +1,30 @@
+require('dotenv').config();
 const express = require('express');
-const { Pool } = require('pg');
+const db = require("./models");
+const cors = require("cors");
 
 const app = express();
 const port = 3001;
 
-const pool = new Pool({
-  user: 'postgres',
-  host: '127.0.0.1',
-  database: 'step-addition',
-  password: 'eoqkr123',
-  port: 5432, // default Postgres port
-});
-
-app.get('/', (req, res) => {
-  pool.query('SELECT NOW()', (err, res) => {
-    console.log(err, res);
-    pool.end(); // close the connection after the query is executed
+var corsOptions = {
+  origin: "http://localhost:3000"
+};
+db.sequelize.sync({ force: false })
+  .then(() => {
+    console.log("Synced db.");
+  })
+  .catch((err) => {
+    console.log("Failed to sync db: " + err.message);
   });
-  res.send('Hello World!');
-});
+
+app.use(cors(corsOptions));
+// parse requests of content-type - application/json
+app.use(express.json());
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true }));
+
+require("./routes/entries.routes")(app);
 
 app.listen(port, () => {
   console.log(`Backend app listening at http://localhost:${port}`);
